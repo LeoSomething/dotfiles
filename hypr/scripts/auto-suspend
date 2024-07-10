@@ -1,0 +1,35 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+	echo "No arguments! [enable|disable|suspend]"
+elif [ "$1" == "startup" ]; then
+	swayidle -w \
+	timeout 240 ' swaylock ' \
+	timeout 300 ' hyprctl dispatch dpms off' \
+	timeout 900 'systemctl suspend' \
+	resume ' hyprctl dispatch dpms on' \
+	before-sleep 'swaylock'
+elif [ "$1" == "enable" ]; then
+	notify-send -h \
+	string:x-canonical-private-synchronous:sys-notify -u \
+	low -i \
+	/home/leo/.config/hypr/mako/icons/sleep.png \
+	"Sleep mode enabled"
+
+	swayidle -w \
+	timeout 240 ' swaylock ' \
+	timeout 300 ' hyprctl dispatch dpms off' \
+	timeout 900 'systemctl suspend' \
+	resume ' hyprctl dispatch dpms on' \
+	before-sleep 'swaylock'
+elif [ "$1" == "disable" ]; then
+	notify-send -h \
+	string:x-canonical-private-synchronous:sys-notify -u \
+	low -i \
+	/home/leo/.config/hypr/mako/icons/no-sleep.png \
+	"Sleep mode disabled"
+	
+	killall swayidle
+else
+	echo "invalid arg $1. [enable|disable|suspend]"
+fi

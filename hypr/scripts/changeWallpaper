@@ -1,0 +1,19 @@
+#!/bin/bash
+
+RES="1920x1080"
+if xrandr | grep "3440x1440" | grep "connected"; then
+	#set monitor resolution (affects wallpaper dir)
+	RES="3440x1440"		
+fi
+
+DIR=$HOME/Pictures/wallpapers/$RES
+PICS=($(ls ${DIR}))
+
+RANDOMPICS=${PICS[ $RANDOM % ${#PICS[@]} ]}
+
+if [[ $(pidof swaybg) ]]; then
+  pkill swaybg
+fi
+
+swaybg -m fill -i ${DIR}/${RANDOMPICS}
+## notify-send "${RANDOMPICS}"
